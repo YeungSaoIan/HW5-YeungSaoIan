@@ -1,35 +1,18 @@
 長庚大學 大數據分析方法 作業五
 ================
 
-作業說明 （繳交時請直接刪除這個章節）
--------------------------------------
-
-作業目的：延續作業四，練習讀入檔案，並做基本的探索式資料分析
-
-依下列指示，完成探索式資料分析作業：
-
--   下載並讀入[105各村里教育程度資料](http://data.moi.gov.tw/MoiOD/Data/DataContent.aspx?oid=1F69C3BD-C367-4216-8969-14FDC609B4B0) `5pt`
-
--   下載並讀入[10512村里戶數、單一年齡人口](http://data.moi.gov.tw/MoiOD/Data/DataContent.aspx?oid=EEC2F7DB-CD5B-4968-AB40-9BD17B86A8C2) `5pt`
-
--   分析議題1：各縣市各有多少個村里`10pt`？用村里數由大到小排序`5pt` ，討論結果`5pt` 。（group\_by, summarise, n, arrange）
-
--   分析議題2：各縣市各村里的平均人口數是多少（平均每個村里有多少人）`10pt`？用平均人口數由大到小排序`5pt` ，討論結果`5pt` 。（group\_by, summarise, mean, arrange）
-
--   分析議題3：哪個**縣市**的博班畢業（不分性別）人口最多`10pt`？用博班畢業人口數由大到小排序`5pt` ，討論結果`5pt` 。（group\_by, summarise, sum, mutate, arrange）
-
--   分析議題4：各**縣市**碩畢男女比例的差異
-    -   利用**村里**資料加總來計算各**縣市**男女人口與碩畢男女人數資料 （group\_by, summarise）`10pt`
-    -   使用上述總合後的資料，基於**縣市**欄位，結合教育程度與人口兩張表格 （inner\_join） `10pt`
-    -   分別計算各縣市男女碩畢比例，依結果**討論**各縣市男女碩畢比例是否有差異，如有幾個縣市男生碩畢比例大於女生，是否有和地區有關等 `10pt`
-
 讀入教育程度資料與人口數資料
 ----------------------------
 
 ``` r
 #這是R Code Chunk
 library(readr)
-data1 <-read_csv("~/Desktop/HW5-YeungSaoIan/opendata105Y020.csv")
+```
+
+    ## Warning: package 'readr' was built under R version 3.3.3
+
+``` r
+data1 <-read_csv("C:/bigdata/opendata105Y020.csv")
 ```
 
     ## Parsed with column specification:
@@ -40,7 +23,7 @@ data1 <-read_csv("~/Desktop/HW5-YeungSaoIan/opendata105Y020.csv")
     ## See spec(...) for full column specifications.
 
 ``` r
-data2 <-read_csv("~/Desktop/HW5-YeungSaoIan/opendata10512M030.csv")
+data2 <-read_csv("C:/bigdata/opendata10512M030.csv")
 ```
 
     ## Parsed with column specification:
@@ -52,6 +35,8 @@ data2 <-read_csv("~/Desktop/HW5-YeungSaoIan/opendata10512M030.csv")
 ``` r
 library(dplyr)
 ```
+
+    ## Warning: package 'dplyr' was built under R version 3.3.3
 
     ## 
     ## Attaching package: 'dplyr'
@@ -89,7 +74,7 @@ head(villagenumanalyze[order(villagenumanalyze$villagenum,decreasing = T),])
 | 新北市新莊區 |          84|
 | 屏東縣屏東市 |          79|
 
-解釋解釋解釋 討論討論討論討論
+新北市板橋區的村里數最多,有126
 
 各縣市每個村里平均有多少人
 --------------------------
@@ -113,7 +98,7 @@ head(villagepopmeananalyze[order(villagepopmeananalyze$villagepopmean,decreasing
 | 臺中市北屯區 |          42|         270547|        6441.595|
 | 臺北市文山區 |          43|         275231|        6400.721|
 
-解釋解釋解釋 討論討論討論討論
+如圖所示: 臺中市大里區的村里平均人數最多 平均人數為7788.33
 
 各縣市的博班畢業人口
 --------------------
@@ -126,16 +111,17 @@ head(villagephdanalyze[order(villagephdanalyze$villagephdnum,decreasing = T),])
 )
 ```
 
-| site\_id     |  villagenum|  villagephdnum|
-|:-------------|-----------:|--------------:|
-| 臺北市大安區 |          53|           5677|
-| 臺北市文山區 |          43|           3111|
-| 新竹市東　區 |          53|           3051|
-| 臺北市中正區 |          31|           2305|
-| 臺南市東　區 |          45|           2142|
-| 臺北市士林區 |          51|           2046|
-
-解釋解釋解釋 討論討論討論討論
+| site\_id         |      villagenum|  villagephdnum|
+|:-----------------|---------------:|--------------:|
+| 臺北市大安區     |              53|           5677|
+| 臺北市文山區     |              43|           3111|
+| 新竹市東　區     |              53|           3051|
+| 臺北市中正區     |              31|           2305|
+| 臺南市東　區     |              45|           2142|
+| 臺北市士林區     |              51|           2046|
+| 如圖所示:        |                |               |
+| 臺北市大安區的博 |  班畢業人數最多|               |
+| 共5677人         |                |               |
 
 各縣市碩畢男女比例的差異
 ------------------------
@@ -163,4 +149,8 @@ knitr::kable(
 mix<-inner_join(data1,data2,by=c("site_id","village"="village"))
 ```
 
-解釋解釋解釋 討論討論討論討論
+如圖所示: 臺北市大安區的碩畢比例最高 男生碩畢比例為13.63% 女生碩畢比例為9.66%
+
+綜合統計資料: 北部的博碩畢業比例最高,以臺北市大安區最為明顯 其次是臺中市
+
+由此推斷城市人口愈多愈繁榮,博碩畢業比例愈高.

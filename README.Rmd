@@ -28,11 +28,21 @@ output: github_document
 ## 讀入教育程度資料與人口數資料
 ```{r}
 #這是R Code Chunk
+library(readr)
+data1 <-read_csv("~/Desktop/HW5-YeungSaoIan/opendata105Y020.csv")
+data2 <-read_csv("~/Desktop/HW5-YeungSaoIan/opendata10512M030.csv")
+library(dplyr)
+#結合教育程度與人口兩張表格
+mix<-inner_join(data1,data2,by=c("site_id","village"="village"))
 ```
 
 ## 各縣市村里數
 ```{r}
 #這是R Code Chunk
+ villagenumanalyze = summarise(group_by(mix,site_id), villagenum = n())
+knitr::kable(
+head(villagenumanalyze[order(villagenumanalyze$villagenum,decreasing = T),])
+)
 ```
 
 解釋解釋解釋
@@ -41,6 +51,12 @@ output: github_document
 ## 各縣市每個村里平均有多少人
 ```{r}
 #這是R Code Chunk
+#villagepopmeananalyze = summarise(group_by(villagenumanalyze,site_id),villagenum = n(), villagepopmean = as.numeric(villagenum)/as.numeric(data2$people_total))
+
+villagepopmeananalyze = summarise(group_by(mix,site_id),villagenum = n(), villagepopnum = sum(as.numeric(people_total)), villagepopmean = villagepopnum/villagenum)
+knitr::kable(
+head(villagepopmeananalyze[order(villagepopmeananalyze$villagepopmean,decreasing = T),])
+)
 ```
 
 解釋解釋解釋
@@ -50,6 +66,10 @@ output: github_document
 ## 各縣市的博班畢業人口
 ```{r}
 #這是R Code Chunk
+villagephdanalyze = summarise(group_by(mix,site_id),villagenum = n(), villagephdnum = sum(as.numeric(edu_doctor_graduated_m) +as.numeric(edu_doctor_graduated_f)) )  
+knitr::kable(
+head(villagephdanalyze[order(villagephdanalyze$villagephdnum,decreasing = T),])
+)
 ```
 
 解釋解釋解釋
@@ -59,6 +79,14 @@ output: github_document
 ## 各縣市碩畢男女比例的差異
 ```{r}
 #這是R Code Chunk
+villagemasteranalyze = summarise(group_by(mix,site_id),villagenum = n(), villagemalemasterrate =sum(as.numeric(edu_master_graduated_m))/sum(as.numeric(people_total_m)), villagefemalemasterrate =sum(as.numeric(edu_master_graduated_f))/sum(as.numeric(people_total_f)), villagemasterrate = villagemalemasterrate + villagefemalemasterrate)  
+
+knitr::kable(
+  head(villagemasteranalyze[order(villagemasteranalyze$villagemasterrate,decreasing = T),])
+)
+
+#結合教育程度與人口兩張表格
+mix<-inner_join(data1,data2,by=c("site_id","village"="village"))
 ```
 
 解釋解釋解釋
